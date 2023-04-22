@@ -1,6 +1,7 @@
 package com.vvs.leetcode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class NewNewMain {
@@ -572,10 +573,258 @@ public class NewNewMain {
         return ans + startValue - target;
     }
 
+    public int maximizeGreatness(int[] nums) {
+        Arrays.sort(nums);
+        int i = 0;
+        for (int x : nums) {
+            if (x > nums[i]) {
+                i++;
+            }
+        }
+        return i;
+    }
+
+    public long findScore(int[] nums) {
+        int n = nums.length;
+        Integer[] ids = IntStream.range(0, n)
+                        .boxed().toArray(Integer[]::new);
+        Arrays.sort(ids, (i, j) -> nums[i] - nums[j]);
+
+        long ans = 0;
+        boolean[] vis = new boolean[n + 2]; // 保证下标不越界
+        for (int i : ids)
+            if (!vis[i + 1]) { // 避免 -1，偏移一位
+                vis[i] = vis[i + 2] = true;
+                ans += nums[i];
+            }
+        return ans;
+    }
+
+    public int maxWidthOfVerticalArea(int[][] points) {
+        Arrays.sort(points, Comparator.comparingInt(o -> o[0]));
+        int ans = 0;
+        for (int i = 1;i < points.length; i++) {
+            ans = Math.max(ans, points[i][0] - points[i - 1][0]);
+        }
+        return ans;
+    }
+
+    boolean flag0331 = false;
+    int[][] dirs = {
+            {1, 2}, {1, -2},
+            {-1, 2}, {-1, -2},
+            {2, 1}, {2, -1},
+            {-2, 1}, {-2, -1}
+    };
+
+    public boolean checkValidGrid(int[][] grid) {
+        dfs(0, 0, 0, grid.length * grid.length - 1, grid);
+        return flag0331;
+    }
+
+    public void dfs(int x, int y, int cur, int end, int[][] grid) {
+        if (cur > end) {
+            return;
+        }
+        if (grid[x][y] == end) {
+            flag0331 = true;
+            return;
+        }
+        for (int[] dir : dirs) {
+            int nx = x + dir[0];
+            int ny = y + dir[1];
+            if (nx < 0 || nx > end || ny < 0 || ny > end) {
+                continue;
+            }
+            if (grid[nx][ny] == cur + 1) {
+                dfs(nx, ny, cur + 1, end, grid);
+            }
+        }
+    }
+
+    public int[] prevPermOpt1(int[] arr) {
+        int n = arr.length;
+        for (int i = n - 2;i >= 0; i--) {
+            if (arr[i] > arr[i + 1]) {
+                int j = n - 1;
+                while (arr[j] >= arr[i]) {
+                    j--;
+                }
+                int t = arr[j];
+                arr[j] = arr[i];
+                arr[i] = t;
+                break;
+            }
+        }
+        return arr;
+    }
+
+    int ans44 = -1;
+
+    public int beautifulSubsets(int[] nums, int k) {
+        int n = nums.length;
+        int[] vis = new int[5050];
+        dfs(0, nums, vis, k);
+        return ans44;
+    }
+
+    public void dfs(int cur, int[] nums, int[] vis, int k) {
+        ans44++;
+        if (cur == nums.length) {
+            return;
+        }
+        for (int j = cur;j < nums.length; j++) {
+            int c = nums[j] + k;
+            if (vis[c - k] == 0 && vis[c + k] == 0) {
+                vis[c]++;
+                dfs(j + 1, nums, vis, k);
+                vis[c]--;
+            }
+        }
+    }
+
+    public int findSmallestInteger(int[] nums, int m) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int x : nums) {
+            map.merge((x % m + m) % m, 1, Integer::sum);
+        }
+        int ans = 0;
+        while (map.merge(ans % m, -1, Integer::sum) >= 0) {
+            ans++;
+        }
+        return ans;
+    }
+
+    public String baseNeg2(int n) {
+        StringBuilder sb = new StringBuilder();
+        while (n > 0) {
+            sb.append(n % 2);
+            n >>= 1;
+        }
+        if ((n & (n - 1)) != 0) {
+            sb.append("1");
+        }
+        return sb.reverse().toString();
+    }
+
+    public int[] supplyWagon(int[] supplies) {
+        int n = supplies.length;
+        int c = n >> 1;
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0;i < n; i++) {
+            list.add(supplies[i]);
+        }
+        while (list.size() > c) {
+            int vv = list.size();
+            int cc = 1;
+            int min = Integer.MAX_VALUE;
+            for (int i = 1;i < vv; i++) {
+                int cur = list.get(i) + list.get(i - 1);
+                if (cur < min) {
+                    cc = i;
+                    min = cur;
+                }
+            }
+            list.set(cc, min);
+            list.remove(cc - 1);
+        }
+        int[] ans = new int[list.size()];
+        for (int i = 0;i < list.size(); i++) {
+            ans[i] = list.get(i);
+        }
+        return ans;
+    }
+
+    public int adventureCamp(String[] expeditions) {
+        int ans = -1;
+        String start = expeditions[0];
+        String[] strings = start.split("->");
+        Set<String> set = Arrays.stream(strings).collect(Collectors.toSet());
+        int max = 0;
+        for (int i = 1;i < expeditions.length; i++) {
+            String cur = expeditions[i];
+            String[] curs = cur.split("->");
+            Set<String> set1 = new HashSet<>();
+            for (int j = 0;j < curs.length; j++) {
+                if (curs[j].length() > 0 && !set.contains(curs[j])) {
+                    set1.add(curs[j]);
+                }
+            }
+            set.addAll(set1);
+            if (set1.size() > max) {
+                max = set1.size();
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public int fieldOfGreatestBlessing(int[][] mat) {
+        int ans = 1;
+        TreeMap<Double, List<Integer>> map = new TreeMap<>();
+        Map<Integer, double[]> map1 = new HashMap<>();
+        for (int i = 0;i < mat.length; i++) {
+            double cur = mat[i][2] / 2.0;
+            double y1 = mat[i][1] - cur;
+            double y2 = mat[i][1] + cur;
+            double x1 = mat[i][0] - cur;
+            double x2 = mat[i][0] + cur;
+            map.putIfAbsent(y1, new ArrayList<>());
+            map.putIfAbsent(y2, new ArrayList<>());
+            map.get(y1).add(i);
+            map.get(y2).add(i);
+            map1.put(i, new double[]{x1, x2});
+        }
+        Set<Integer> set = new HashSet<>();
+        for (Double key : map.keySet()) {
+            List<Integer> needRemove = new ArrayList<>();
+            for (int index : map.get(key)) {
+                if (!set.contains(index)) {
+                    set.add(index);
+                } else {
+                    needRemove.add(index);
+                }
+            }
+            List<double[]> list = new ArrayList<>();
+            for (int x : set) {
+                list.add(map1.get(x));
+            }
+            ans = Math.max(ans, maxOverlap(list));
+            for (int x : needRemove) {
+                set.remove(x);
+            }
+        }
+        return ans;
+    }
+
+    public int maxOverlap(List<double[]> intervals) {
+        List<double[]> events = new ArrayList<>();
+        for (double[] interval : intervals) {
+            events.add(new double[]{interval[0], 1});
+            events.add(new double[]{interval[1], -1});
+        }
+
+        events.sort((o1, o2) -> {
+            if (o1[0] != o2[0]) {
+                return Double.compare(o1[0], o2[0]);
+            }
+            return Double.compare(o2[1], o1[1]);
+        });
+
+        int count = 0;
+        int maxCount = 0;
+        for (double[] event : events) {
+            count += event[1];
+            maxCount = Math.max(maxCount, count);
+        }
+
+        return maxCount;
+    }
+
     public static void main(String[] args) {
         new NewNewMain()
-                .minimumEffort(new int[][]{
-                        {1,2},{2,4},{4,8}
+                .fieldOfGreatestBlessing(new int[][] {
+                        {7,7,9},{7,5,3},{1,8,5},{5,6,3},{9,10,2},{8,4,10}
                 });
     }
 }
