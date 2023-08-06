@@ -1,6 +1,9 @@
 package com.vvs.leetcode;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -821,10 +824,573 @@ public class NewNewMain {
         return maxCount;
     }
 
+    public int rampartDefensiveLine(int[][] rampart) {
+        int l = 0, r = (int) (6);
+        int ans = 0;
+        while (l <= r) {
+            int mid = (l + r) >> 1;
+            if (check(rampart, mid)) {
+                ans = mid;
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    public boolean check(int[][] rampart, int mid) {
+        int last = rampart[0][1];
+        for (int i = 1;i < rampart.length - 1; i++) {
+            int s = rampart[i][0];
+            int e = rampart[i][1];
+            int m1 = Math.max(last, rampart[i - 1][1]);
+            int m2 = rampart[i + 1][0];
+            int dis1 = s - m1;
+            int dis2 = m2 - e;
+            if (dis1 + dis2 < mid) {
+                return false;
+            }
+            if (mid >= dis1) {
+                last = e + (mid - dis1);
+            } else {
+                last = e;
+            }
+        }
+        return true;
+    }
+
+    int[][] dirs4 = {
+            {1, 0}, {0, 1},
+            {-1, 0}, {0, -1}
+    };
+
+    int[] vis = new int[1638401];
+
+    public int extractMantra(String[] matrix, String mantra) {
+        int n = matrix.length;
+        int m = matrix[0].length();
+        Queue<Integer> queue = new ArrayDeque<>();
+        int v = tuple3ToLong(0, 0, 0);
+        queue.add(v);
+        vis[v] = 1;
+        int step = 1;
+        while (!queue.isEmpty()) {
+            for (int i = queue.size() - 1;i >= 0; i--) {
+                int cur = queue.poll();
+                int v3 = cur & ((1 << 7) - 1);
+                int v2 = (cur >> 7) & ((1 << 7) - 1);
+                int v1 = cur >> 14;
+                if (matrix[v1].charAt(v2) == mantra.charAt(v3)) {
+                    if (v3 == mantra.length() - 1) {
+                        return step;
+                    }
+                    int hash = tuple3ToLong(v1, v2, v3 + 1);
+                    if (vis[hash] == 0) {
+                        queue.add(hash);
+                        vis[hash] = 1;
+                    }
+                }
+                for (int[] dir : dirs4) {
+                    int x = v1 + dir[0];
+                    int y = v2 + dir[1];
+                    int hash = tuple3ToLong(x, y, v3);
+                    if (x >= 0 && x < n && y >= 0 && y < m && vis[hash] == 0) {
+                        vis[hash] = 1;
+                        queue.add(hash);
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+
+    public int tuple3ToLong(int a, int b, int c) {
+        return a << 14 | b << 7 | c;
+    }
+
+    public String evolutionaryRecord(int[] parents) {
+        int n = parents.length;
+        List<Integer>[] lists = new ArrayList[n];
+        for (int i = 0;i < n; i++) {
+            lists[i] = new ArrayList<>();
+        }
+        for (int i = 1;i < parents.length; i++) {
+            int p = parents[i];
+            lists[p].add(i);
+        }
+        String res = dfs(0, lists);
+        int end = res.length() - 1;
+        while (res.charAt(end) == '1') {
+            end--;
+        }
+        return res.substring(1, end + 1);
+    }
+
+    public String dfs(int index, List<Integer>[] lists) {
+        if (lists[index].size() == 0) {
+            return "01";
+        }
+        Set<String> list = new TreeSet<>();
+        for (int x : lists[index]) {
+            list.add(dfs(x, lists));
+        }
+        return "0" + String.join("", list) + "1";
+    }
+
+    public int[] circularGameLosers(int n, int k) {
+        int[] cur = new int[n];
+        List<Integer> res = new ArrayList<>();
+        int i = 0, v = 1;
+        while (true) {
+            if (cur[i] == 1) {
+                break;
+            }
+            cur[i] = 1;
+            i += (v * k);
+            if (i >= n) {
+                i %= n;
+            }
+        }
+        for (int vv = 0;vv <n; vv++) {
+            if (cur[vv] == 0) {
+                res.add(vv + 1);
+            }
+        }
+        int[] ans = new int[res.size()];
+        for (int vv = 0;vv < ans.length; vv++) {
+            ans[vv] = res.get(vv);
+        }
+        return ans;
+    }
+
+    public boolean doesValidArrayExist(int[] derived) {
+        return judge(0, derived) || judge(1, derived);
+    }
+
+    private boolean judge(int s, int[] derived) {
+        int cur = s;
+        int next = 1;
+        for (int i = 0;i < derived.length; i++) {
+            int vv = derived[i];
+            if (i != derived.length - 1) {
+                if (vv == 1) {
+                    if (cur == 1) {
+                        next = 0;
+                    } else {
+                        next = 1;
+                    }
+                } else if (vv == 0) {
+                    if (cur == 1) {
+                        next = 1;
+                    } else {
+                        next = 0;
+                    }
+                }
+            } else {
+                break;
+            }
+            cur = next;
+        }
+        return (cur ^ s) == derived[derived.length - 1];
+    }
+
+    int[][] dirs3 = {
+            {1, 1}, {0, 1},
+            {-1, 1}
+    };
+
+    public int maxMoves(int[][] grid) {
+        int ans = 0;
+        int n = grid.length;
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0;i < n; i++) {
+            ans = Math.max(ans, maxMoves1(grid, i, 0, map));
+        }
+        return ans;
+    }
+
+    public int maxMoves1(int[][] grid, int s, int e, Map<String, Integer> map) {
+        if (map.get(s + "," + e) != null) {
+            return map.get(s + "," + e);
+        }
+        int t = 0;
+        for (int[] dir : dirs3) {
+            int nx = dir[0] + s;
+            int ny = dir[1] + e;
+            if (nx >= 0 && nx < grid.length && ny >= 0 && ny < grid[0].length) {
+                if (grid[nx][ny] > grid[s][e]) {
+                    t = Math.max(t, maxMoves1(grid, nx, ny, map));
+                }
+            }
+        }
+        map.put(s + "," + e, t);
+        return t;
+    }
+
+    int[] vis1 = null;
+
+    public int countCompleteComponents(int n, int[][] edges) {
+        List<Integer>[] lists = new ArrayList[n];
+        vis1 = new int[n];
+        for (int i = 0;i < n; i++) {
+            lists[i] = new ArrayList<>();
+        }
+        for (int[] e : edges) {
+            lists[e[0]].add(e[1]);
+            lists[e[1]].add(e[0]);
+        }
+        int ans = 0;
+        for (int i = 0;i < n; i++) {
+            if (vis1[i] == 0) {
+                List<Integer> cur = new ArrayList<>();
+                dfs1(i, lists, cur);
+                boolean flag = true;
+                for (int x : cur) {
+                    List<Integer> vv = lists[x];
+                    Set<Integer> set = new HashSet<>(cur);
+                    set.remove(x);
+                    if (set.size() != vv.size()) {
+                        flag = false;
+                    }
+                    if (!flag) {
+                        break;
+                    }
+                }
+                if (flag) {
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+
+    public void dfs1(int i, List<Integer>[] lists, List<Integer> list) {
+        list.add(i);
+        vis1[i] = 1;
+        for (int x : lists[i]) {
+            if (vis1[x] == 0) {
+                dfs1(x, lists, list);
+            }
+        }
+    }
+
+    public int countSeniors(String[] details) {
+        int ans = 0;
+        for (String d : details) {
+            String cur = "" +  d.charAt(10) + d.charAt(11);
+            if (Integer.parseInt(cur) > 60) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+    public int matrixSum(int[][] nums) {
+        for (int[] num : nums) {
+            Arrays.sort(num);
+        }
+        int m = nums[0].length - 1;
+        int ans = 0;
+        for (int j = m;j >= 0; j--) {
+            int vv = 0;
+            for (int i = 0;i < nums.length; i++) {
+                vv = Math.max(vv, nums[i][j]);
+            }
+            ans += vv;
+        }
+        return ans;
+    }
+
+    public long maximumOr(int[] nums, int k) {
+        int pre = 0;
+        int n = nums.length;
+        int[] suf = new int[n + 1];
+        for (int i = n - 1;i >= 0; i--) {
+            suf[i] = suf[i + 1] | nums[i];
+        }
+        int ans = 0;
+        for (int i = 0;i < n; i++) {
+            ans = Math.max(ans, pre | (nums[i] << k) | suf[i + 1]);
+            pre |= nums[i];
+        }
+        return ans;
+    }
+
+    public int sumOfPower(int[] nums) {
+        Arrays.sort(nums);
+        int mod = (int) (1e9 + 7);
+        long ans = 0, sum = 0;
+        for (int num : nums) {
+            ans += ((long)num * num % mod) * (num + sum) % mod;
+            sum = (sum * 2 + num) % mod;
+        }
+        return (int) (ans % mod);
+    }
+
+    public int[] rearrangeBarcodes(int[] barcodes) {
+        Arrays.sort(barcodes);
+        int[] ans = new int[barcodes.length];
+        int l = 0, r = barcodes.length - 1;
+        for (int i = 0;i < barcodes.length; i+=2) {
+            ans[i] = barcodes[l++];
+            ans[i] = barcodes[r--];
+        }
+        if (l == r) {
+            ans[ans.length - 1] = barcodes[l];
+        }
+        return ans;
+    }
+
+    public int minLength(String s) {
+        while (s.contains("AB") || s.contains("CD")) {
+            s = s.replace("AB", "");
+        }
+        return s.length();
+    }
+
+    public String makeSmallestPalindrome(String s) {
+        char[] chars = s.toCharArray();
+        int n = s.length();
+        int ans = 0;
+        for (int i = 0;i < n / 2; i++) {
+            char x = chars[i];
+            char y = chars[n - i - 1];
+            if (x != y) {
+                if (x > y) {
+                    chars[i] = y;
+                } else {
+                    chars[n - i - 1] = x;
+                }
+            }
+        }
+        return new String(chars);
+    }
+
+//    public int punishmentNumber(int n) {
+//
+//    }
+
+    boolean flag = false;
+
+    public void dfs(String str, int s, int cur, int n) {
+        if (s == str.length()) {
+            if (cur == n) {
+                flag = true;
+            }
+            return;
+        }
+        for (int i = s;i < str.length(); i++) {
+            String vv = str.substring(s, i + 1);
+            dfs(str, i + 1, cur + Integer.parseInt(vv), n);
+        }
+    }
+    public int punishmentNumber(int n) {
+        int ans = 0;
+        for (int i = 1;i <= n; i++) {
+            dfs(String.valueOf(i * i), 0, 0, i);
+            if (flag) {
+                ans += i * i;
+            }
+            flag = false;
+        }
+        return ans;
+    }
+
+    public int buyChoco(int[] prices, int money) {
+        Arrays.sort(prices);
+        return prices[0] + prices[1] > money ? money : money - (prices[0] + prices[1]);
+    }
+
+    public int minExtraCharWithSearch(String s, String[] dictionary) {
+        Set<String> set = Arrays.stream(dictionary).collect(Collectors.toSet());
+        Map<Integer, Integer> map = new HashMap<>();
+        Function<Integer, Integer> dfs = new Function<Integer, Integer>() {
+            @Override
+            public Integer apply(Integer i) {
+                if (map.get(i) != null) {
+                    return map.get(i);
+                }
+                if (i < 0) {
+                    return 0;
+                }
+                int res = apply(i - 1) + 1;
+                for (int j = 0;j < i + 1; j++) {
+                    if (set.contains(s.substring(j, i + 1))) {
+                        res = Math.min(res, apply(j - 1));
+                    }
+                }
+                map.put(i, res);
+                return res;
+            }
+        };
+        return dfs.apply(s.length() - 1);
+    }
+
+    public int minExtraChar(String s, String[] dictionary) {
+        Set<String> set = Arrays.stream(dictionary).collect(Collectors.toSet());
+        int n = s.length();
+        int[] f = new int[n + 1];
+        f[0] = 0;
+        for (int i = 0;i < n; i++) {
+            f[i + 1] = f[i] + 1;
+            for (int j = 0;j <= i; j++) {
+                String sub = s.substring(j, i + 1);
+                if (set.contains(sub)) {
+                    f[i + 1] = Math.min(f[i + 1], f[j]);
+                }
+            }
+        }
+        return f[n];
+    }
+
+    public long maxStrengthWith2N(int[] nums) {
+        int n = nums.length;
+        long ans = Integer.MIN_VALUE;
+        for (int i = 1;i < (1 << n); i++) {
+            int cur = i;
+            int index = 0;
+            long vv = 1;
+            while (cur > 0) {
+                if ((cur & 1) == 1) {
+                    vv *= nums[index];
+                }
+                index++;
+                cur >>= 1;
+            }
+            ans = Math.max(ans, vv);
+        }
+        return ans;
+    }
+
+    long ans0604 = Long.MIN_VALUE;
+
+    public long maxStrength(int[] nums) {
+        dfs(0, 1, true, nums);
+        return ans0604;
+    }
+
+    public void dfs(int i, long prod, boolean empty, int[] nums) {
+        if (i == nums.length) {
+            if (!empty) {
+                ans0604 = Math.max(ans0604, prod);
+            }
+            return;
+        }
+        dfs(i + 1, prod * nums[i], false, nums);
+        dfs(i + 1, prod, empty, nums);
+    }
+
+    public long maxStrengthDP(int[] nums) {
+        long min = nums[0], max = nums[0];
+        for (int i = 1;i < nums.length; i++) {
+            long tmp = max;
+            max = max(max, (long) nums[i], max * nums[i], min * nums[i]);
+            min = min(min, (long) nums[i], tmp * nums[i], min * nums[i]);
+        }
+        return max;
+    }
+
+    public Long max(Long... integers) {
+        return Arrays.stream(integers).max(Long::compare).get();
+    }
+
+    public Long min(Long... integers) {
+        return Arrays.stream(integers).min(Long::compare).get();
+    }
+
+    public int[][] differenceOfDistinctValues(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        int[][] ans = new int[n][m];
+        for (int i = 0;i < n; i++) {
+            for (int j = 0;j < m; j++) {
+                Set<Integer> set1 = new HashSet<>();
+                Set<Integer> set2 = new HashSet<>();
+                int c1 = i - 1, c2 = j - 1, c3 = i + 1, c4 = j + 1;
+                while (c1 >= 0 && c2 >= 0) {
+                    set1.add(grid[c1][c2]);
+                    c1--;c2--;
+                }
+                while (c3 < n && c4 < m) {
+                    set2.add(grid[c3][c4]);
+                    c3++;c4++;
+                }
+                ans[i][j] = Math.abs(set1.size() - set2.size());
+            }
+        }
+        return ans;
+    }
+
+    public long minCost(int[] nums, int x) {
+        int n = nums.length;
+        long[] sum = new long[n];
+        for (int i = 0;i < n; i++) {
+            sum[i] = (long) i * x;
+        }
+        for (int i = 0;i < n; i++) {
+            int min = nums[i];
+            for (int j = i;j < i + n; j++) {
+                min = Math.min(min, nums[j]);
+                sum[j - i] += min;
+            }
+        }
+        return Arrays.stream(sum).min().getAsLong();
+    }
+
+    public int findNonMinOrMax(int[] nums) {
+        int max = Arrays.stream(nums).max().getAsInt();
+        int min = Arrays.stream(nums).min().getAsInt();
+        return Arrays.stream(nums).filter(x -> x != max && x != min).min().orElse(-1);
+    }
+
+    public String smallestString(String s) {
+        int n = s.length();
+        StringBuilder sb = new StringBuilder();
+        int v = 0;
+        while (v < n && s.charAt(v) == 'a') {
+            if (v == n - 1) {
+                sb.append('z');
+                break;
+            }
+            sb.append('a');
+            v++;
+        }
+        for (int i = v;i < n; i++) {
+            char c = s.charAt(i);
+            if (c == 'a' && i != 0) {
+                sb.append(s.substring(i));
+                break;
+            }
+            sb.append((char) ('a' + (((c - 'a') + 25)) % 26));
+        }
+        return sb.toString();
+    }
+
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode hair = new ListNode(0);
+        ListNode p = hair;
+        while (list1 != null && list2 != null) {
+            if (list1.val > list2.val) {
+                hair.next = list2;
+                list2 = list2.next;
+            } else {
+                hair.next = list1;
+                list1 = list1.next;
+            }
+            hair = hair.next;
+        }
+        if (list1 == null) {
+            hair.next = list2;
+        } else {
+            hair.next = list1;
+        }
+        return p.next;
+    }
+
     public static void main(String[] args) {
-        new NewNewMain()
-                .fieldOfGreatestBlessing(new int[][] {
-                        {7,7,9},{7,5,3},{1,8,5},{5,6,3},{9,10,2},{8,4,10}
-                });
+        int haw = new NewNewMain().minExtraChar("haw", new String[]{"aw"});
+        System.out.println(haw);
     }
 }
