@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -11,7 +12,7 @@ public class NewNewMain {
 
     public boolean[] distanceLimitedPathsExist(int n, int[][] edgeList, int[][] queries) {
         int[] par = new int[n];
-        for (int i = 0;i <= n; i++) {
+        for (int i = 0; i <= n; i++) {
             par[i] = i;
         }
         Arrays.sort(edgeList, Comparator.comparingInt(o -> o[2]));
@@ -45,14 +46,14 @@ public class NewNewMain {
     public int beautySum(String s) {
         int ans = 0;
         int n = s.length();
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             int[] cnt = new int[26];
             int max = Integer.MIN_VALUE;
-            for (int j = i;j < n; j++) {
+            for (int j = i; j < n; j++) {
                 int v = s.charAt(j) - 'a';
                 max = Math.max(++cnt[v], max);
                 int min = Integer.MAX_VALUE;
-                for (int k = 0;k < 26; k++) {
+                for (int k = 0; k < 26; k++) {
                     if (cnt[k] > 0) {
                         min = Math.min(cnt[k], min);
                     }
@@ -66,7 +67,7 @@ public class NewNewMain {
     public int minOperations(int[] nums) {
         int n = nums.length;
         int ans = 0;
-        for (int i = 1;i < n; i++) {
+        for (int i = 1; i < n; i++) {
             if (nums[i] <= nums[i - 1]) {
                 ans += nums[i - 1] - nums[i] + 1;
                 nums[i] = nums[i - 1] + 1;
@@ -77,7 +78,7 @@ public class NewNewMain {
 
     public char repeatedCharacter(String s) {
         int[] chars = new int[26];
-        for(int i = 0;i < s.length(); i++) {
+        for (int i = 0; i < s.length(); i++) {
             char cur = s.charAt(i);
             if (chars[cur++] == 1) {
                 return cur;
@@ -100,7 +101,7 @@ public class NewNewMain {
     public int distinctPrimeFactors(int[] nums) {
         Set<Integer> set = new HashSet<>();
         for (int x : nums) {
-            for (int i = 2;i <= Math.sqrt(x); i++) {
+            for (int i = 2; i <= Math.sqrt(x); i++) {
                 if (x % i == 0) {
                     while (x % i == 0) {
                         x /= i;
@@ -141,10 +142,10 @@ public class NewNewMain {
         boolean[] np = new boolean[MX + 1];
         Arrays.fill(primes, MX + 1);
         int cur = 0;
-        for (int i = 2;i <= MX; i++) {
+        for (int i = 2; i <= MX; i++) {
             if (!np[i]) {
                 primes[cur++] = i;
-                for (int j = i;j <= MX / i; j++) {
+                for (int j = i; j <= MX / i; j++) {
                     np[i * j] = true;
                 }
             }
@@ -153,7 +154,7 @@ public class NewNewMain {
 
     public int[] closestPrimes(int left, int right) {
         int p = -1, q = -1;
-        for (int i = lower_bound(primes, left);i + 1 < primes.length && primes[i + 1] <= right; i++) {
+        for (int i = lower_bound(primes, left); i + 1 < primes.length && primes[i + 1] <= right; i++) {
             if (q < 0 || primes[i + 1] - primes[i] < q - p) {
                 p = primes[i];
                 q = primes[i + 1];
@@ -238,7 +239,7 @@ public class NewNewMain {
             return 0;
         }
         int ans = n;
-        for (int l = 0, r = 0;r < n; r++) {
+        for (int l = 0, r = 0; r < n; r++) {
             cnt[chars[r] - 'A']--;
             while (cnt['Q' - 'A'] <= m
                     && cnt['W' - 'A'] <= m
@@ -255,7 +256,7 @@ public class NewNewMain {
     public int longestWPI(int[] hours) {
         int n = hours.length, ans = 0, s = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 1;i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             s += (hours[i - 1] > 8 ? 1 : -1);
             if (s > 0) {
                 ans = i;
@@ -276,7 +277,7 @@ public class NewNewMain {
         StringBuilder sb1 = new StringBuilder();
         StringBuilder sb2 = new StringBuilder();
         char vv = '#';
-        for (int i = 0;i < cur.length(); i++) {
+        for (int i = 0; i < cur.length(); i++) {
             char c = cur.charAt(i);
             if (c != '9') {
                 if (vv == '#') {
@@ -290,7 +291,7 @@ public class NewNewMain {
             sb1.append(c);
         }
         vv = cur.charAt(0);
-        for (int i = 0;i < cur.length(); i++) {
+        for (int i = 0; i < cur.length(); i++) {
             char c = cur.charAt(i);
             if (vv == c) {
                 sb2.append('0');
@@ -321,7 +322,7 @@ public class NewNewMain {
     public String[] getFolderNames(String[] names) {
         String[] ans = new String[names.length];
         Map<String, Integer> map = new HashMap<>();
-        for (int i = 0;i < names.length; i++) {
+        for (int i = 0; i < names.length; i++) {
             String name = names[i];
             if (map.containsKey(name)) {
                 int index = map.get(name) + 1;
@@ -348,7 +349,7 @@ public class NewNewMain {
         }
         int ans = 0;
         for (int x : nums) {
-            for (int mask = 0;mask < nums.length; mask++) {
+            for (int mask = 0; mask < nums.length; mask++) {
                 if ((x & mask) == 0) {
                     ans += cnt[mask];
                 }
@@ -363,7 +364,7 @@ public class NewNewMain {
         Arrays.sort(chars);
         StringBuilder cur1 = new StringBuilder();
         StringBuilder cur2 = new StringBuilder();
-        for (int i = 0;i < chars.length; i++) {
+        for (int i = 0; i < chars.length; i++) {
             if (i % 2 == 0) {
                 cur1.append(chars[i]);
             } else {
@@ -381,7 +382,7 @@ public class NewNewMain {
         }
         long vv = 1;
         long ans = 1;
-        for (int i = 2;i <= n; i++) {
+        for (int i = 2; i <= n; i++) {
             ans += vv;
             vv += 2;
             ans += vv;
@@ -394,7 +395,7 @@ public class NewNewMain {
         int n = ans.length;
         int mod = (int) (1e9 + 7);
         long vv = 1;
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             vv *= 2;
             vv %= mod;
         }
@@ -467,7 +468,7 @@ public class NewNewMain {
     public int minimumDeletions(String s) {
         int n = s.length(), b = 0;
         int[] dp = new int[n + 1];
-        for (int i = 1;i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             if (s.charAt(i - 1) == 'b') {
                 dp[i] = dp[i - 1];
                 b++;
@@ -481,12 +482,12 @@ public class NewNewMain {
     public String[] findLongestSubarray(String[] array) {
         int n = array.length;
         int[] s = new int[n + 1];
-        for (int i = 0;i < n; i++) {
-            s[i + 1] = s[i] + (Character.isLetter(array[i].charAt(0)) ? 1 : - 1);
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + (Character.isLetter(array[i].charAt(0)) ? 1 : -1);
         }
         int begin = 0, end = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0;i <= n; i++) {
+        for (int i = 0; i <= n; i++) {
             int j = map.getOrDefault(s[i], -1);
             if (j < 0) {
                 map.put(s[i], j);
@@ -504,12 +505,12 @@ public class NewNewMain {
         boolean[] run = new boolean[2023];
         for (int[] t : tasks) {
             int start = t[0], end = t[1], d = t[2];
-            for (int i = start;i <= end; i++) {
+            for (int i = start; i <= end; i++) {
                 if (run[i]) {
                     d--;
                 }
             }
-            for (int i = end;d > 0; i--) {
+            for (int i = end; d > 0; i--) {
                 if (!run[i]) {
                     run[i] = true;
                     d--;
@@ -590,7 +591,7 @@ public class NewNewMain {
     public long findScore(int[] nums) {
         int n = nums.length;
         Integer[] ids = IntStream.range(0, n)
-                        .boxed().toArray(Integer[]::new);
+                .boxed().toArray(Integer[]::new);
         Arrays.sort(ids, (i, j) -> nums[i] - nums[j]);
 
         long ans = 0;
@@ -606,7 +607,7 @@ public class NewNewMain {
     public int maxWidthOfVerticalArea(int[][] points) {
         Arrays.sort(points, Comparator.comparingInt(o -> o[0]));
         int ans = 0;
-        for (int i = 1;i < points.length; i++) {
+        for (int i = 1; i < points.length; i++) {
             ans = Math.max(ans, points[i][0] - points[i - 1][0]);
         }
         return ans;
@@ -647,7 +648,7 @@ public class NewNewMain {
 
     public int[] prevPermOpt1(int[] arr) {
         int n = arr.length;
-        for (int i = n - 2;i >= 0; i--) {
+        for (int i = n - 2; i >= 0; i--) {
             if (arr[i] > arr[i + 1]) {
                 int j = n - 1;
                 while (arr[j] >= arr[i]) {
@@ -676,7 +677,7 @@ public class NewNewMain {
         if (cur == nums.length) {
             return;
         }
-        for (int j = cur;j < nums.length; j++) {
+        for (int j = cur; j < nums.length; j++) {
             int c = nums[j] + k;
             if (vis[c - k] == 0 && vis[c + k] == 0) {
                 vis[c]++;
@@ -714,14 +715,14 @@ public class NewNewMain {
         int n = supplies.length;
         int c = n >> 1;
         List<Integer> list = new ArrayList<>();
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             list.add(supplies[i]);
         }
         while (list.size() > c) {
             int vv = list.size();
             int cc = 1;
             int min = Integer.MAX_VALUE;
-            for (int i = 1;i < vv; i++) {
+            for (int i = 1; i < vv; i++) {
                 int cur = list.get(i) + list.get(i - 1);
                 if (cur < min) {
                     cc = i;
@@ -732,7 +733,7 @@ public class NewNewMain {
             list.remove(cc - 1);
         }
         int[] ans = new int[list.size()];
-        for (int i = 0;i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             ans[i] = list.get(i);
         }
         return ans;
@@ -744,11 +745,11 @@ public class NewNewMain {
         String[] strings = start.split("->");
         Set<String> set = Arrays.stream(strings).collect(Collectors.toSet());
         int max = 0;
-        for (int i = 1;i < expeditions.length; i++) {
+        for (int i = 1; i < expeditions.length; i++) {
             String cur = expeditions[i];
             String[] curs = cur.split("->");
             Set<String> set1 = new HashSet<>();
-            for (int j = 0;j < curs.length; j++) {
+            for (int j = 0; j < curs.length; j++) {
                 if (curs[j].length() > 0 && !set.contains(curs[j])) {
                     set1.add(curs[j]);
                 }
@@ -766,7 +767,7 @@ public class NewNewMain {
         int ans = 1;
         TreeMap<Double, List<Integer>> map = new TreeMap<>();
         Map<Integer, double[]> map1 = new HashMap<>();
-        for (int i = 0;i < mat.length; i++) {
+        for (int i = 0; i < mat.length; i++) {
             double cur = mat[i][2] / 2.0;
             double y1 = mat[i][1] - cur;
             double y2 = mat[i][1] + cur;
@@ -841,7 +842,7 @@ public class NewNewMain {
 
     public boolean check(int[][] rampart, int mid) {
         int last = rampart[0][1];
-        for (int i = 1;i < rampart.length - 1; i++) {
+        for (int i = 1; i < rampart.length - 1; i++) {
             int s = rampart[i][0];
             int e = rampart[i][1];
             int m1 = Math.max(last, rampart[i - 1][1]);
@@ -876,7 +877,7 @@ public class NewNewMain {
         vis[v] = 1;
         int step = 1;
         while (!queue.isEmpty()) {
-            for (int i = queue.size() - 1;i >= 0; i--) {
+            for (int i = queue.size() - 1; i >= 0; i--) {
                 int cur = queue.poll();
                 int v3 = cur & ((1 << 7) - 1);
                 int v2 = (cur >> 7) & ((1 << 7) - 1);
@@ -913,10 +914,10 @@ public class NewNewMain {
     public String evolutionaryRecord(int[] parents) {
         int n = parents.length;
         List<Integer>[] lists = new ArrayList[n];
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             lists[i] = new ArrayList<>();
         }
-        for (int i = 1;i < parents.length; i++) {
+        for (int i = 1; i < parents.length; i++) {
             int p = parents[i];
             lists[p].add(i);
         }
@@ -953,13 +954,13 @@ public class NewNewMain {
                 i %= n;
             }
         }
-        for (int vv = 0;vv <n; vv++) {
+        for (int vv = 0; vv < n; vv++) {
             if (cur[vv] == 0) {
                 res.add(vv + 1);
             }
         }
         int[] ans = new int[res.size()];
-        for (int vv = 0;vv < ans.length; vv++) {
+        for (int vv = 0; vv < ans.length; vv++) {
             ans[vv] = res.get(vv);
         }
         return ans;
@@ -972,7 +973,7 @@ public class NewNewMain {
     private boolean judge(int s, int[] derived) {
         int cur = s;
         int next = 1;
-        for (int i = 0;i < derived.length; i++) {
+        for (int i = 0; i < derived.length; i++) {
             int vv = derived[i];
             if (i != derived.length - 1) {
                 if (vv == 1) {
@@ -1005,7 +1006,7 @@ public class NewNewMain {
         int ans = 0;
         int n = grid.length;
         Map<String, Integer> map = new HashMap<>();
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             ans = Math.max(ans, maxMoves1(grid, i, 0, map));
         }
         return ans;
@@ -1034,7 +1035,7 @@ public class NewNewMain {
     public int countCompleteComponents(int n, int[][] edges) {
         List<Integer>[] lists = new ArrayList[n];
         vis1 = new int[n];
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             lists[i] = new ArrayList<>();
         }
         for (int[] e : edges) {
@@ -1042,7 +1043,7 @@ public class NewNewMain {
             lists[e[1]].add(e[0]);
         }
         int ans = 0;
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             if (vis1[i] == 0) {
                 List<Integer> cur = new ArrayList<>();
                 dfs1(i, lists, cur);
@@ -1079,7 +1080,7 @@ public class NewNewMain {
     public int countSeniors(String[] details) {
         int ans = 0;
         for (String d : details) {
-            String cur = "" +  d.charAt(10) + d.charAt(11);
+            String cur = "" + d.charAt(10) + d.charAt(11);
             if (Integer.parseInt(cur) > 60) {
                 ans++;
             }
@@ -1093,9 +1094,9 @@ public class NewNewMain {
         }
         int m = nums[0].length - 1;
         int ans = 0;
-        for (int j = m;j >= 0; j--) {
+        for (int j = m; j >= 0; j--) {
             int vv = 0;
-            for (int i = 0;i < nums.length; i++) {
+            for (int i = 0; i < nums.length; i++) {
                 vv = Math.max(vv, nums[i][j]);
             }
             ans += vv;
@@ -1107,11 +1108,11 @@ public class NewNewMain {
         int pre = 0;
         int n = nums.length;
         int[] suf = new int[n + 1];
-        for (int i = n - 1;i >= 0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             suf[i] = suf[i + 1] | nums[i];
         }
         int ans = 0;
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             ans = Math.max(ans, pre | (nums[i] << k) | suf[i + 1]);
             pre |= nums[i];
         }
@@ -1123,7 +1124,7 @@ public class NewNewMain {
         int mod = (int) (1e9 + 7);
         long ans = 0, sum = 0;
         for (int num : nums) {
-            ans += ((long)num * num % mod) * (num + sum) % mod;
+            ans += ((long) num * num % mod) * (num + sum) % mod;
             sum = (sum * 2 + num) % mod;
         }
         return (int) (ans % mod);
@@ -1133,7 +1134,7 @@ public class NewNewMain {
         Arrays.sort(barcodes);
         int[] ans = new int[barcodes.length];
         int l = 0, r = barcodes.length - 1;
-        for (int i = 0;i < barcodes.length; i+=2) {
+        for (int i = 0; i < barcodes.length; i += 2) {
             ans[i] = barcodes[l++];
             ans[i] = barcodes[r--];
         }
@@ -1154,7 +1155,7 @@ public class NewNewMain {
         char[] chars = s.toCharArray();
         int n = s.length();
         int ans = 0;
-        for (int i = 0;i < n / 2; i++) {
+        for (int i = 0; i < n / 2; i++) {
             char x = chars[i];
             char y = chars[n - i - 1];
             if (x != y) {
@@ -1181,14 +1182,15 @@ public class NewNewMain {
             }
             return;
         }
-        for (int i = s;i < str.length(); i++) {
+        for (int i = s; i < str.length(); i++) {
             String vv = str.substring(s, i + 1);
             dfs(str, i + 1, cur + Integer.parseInt(vv), n);
         }
     }
+
     public int punishmentNumber(int n) {
         int ans = 0;
-        for (int i = 1;i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             dfs(String.valueOf(i * i), 0, 0, i);
             if (flag) {
                 ans += i * i;
@@ -1216,7 +1218,7 @@ public class NewNewMain {
                     return 0;
                 }
                 int res = apply(i - 1) + 1;
-                for (int j = 0;j < i + 1; j++) {
+                for (int j = 0; j < i + 1; j++) {
                     if (set.contains(s.substring(j, i + 1))) {
                         res = Math.min(res, apply(j - 1));
                     }
@@ -1233,9 +1235,9 @@ public class NewNewMain {
         int n = s.length();
         int[] f = new int[n + 1];
         f[0] = 0;
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             f[i + 1] = f[i] + 1;
-            for (int j = 0;j <= i; j++) {
+            for (int j = 0; j <= i; j++) {
                 String sub = s.substring(j, i + 1);
                 if (set.contains(sub)) {
                     f[i + 1] = Math.min(f[i + 1], f[j]);
@@ -1248,7 +1250,7 @@ public class NewNewMain {
     public long maxStrengthWith2N(int[] nums) {
         int n = nums.length;
         long ans = Integer.MIN_VALUE;
-        for (int i = 1;i < (1 << n); i++) {
+        for (int i = 1; i < (1 << n); i++) {
             int cur = i;
             int index = 0;
             long vv = 1;
@@ -1284,7 +1286,7 @@ public class NewNewMain {
 
     public long maxStrengthDP(int[] nums) {
         long min = nums[0], max = nums[0];
-        for (int i = 1;i < nums.length; i++) {
+        for (int i = 1; i < nums.length; i++) {
             long tmp = max;
             max = max(max, (long) nums[i], max * nums[i], min * nums[i]);
             min = min(min, (long) nums[i], tmp * nums[i], min * nums[i]);
@@ -1304,18 +1306,20 @@ public class NewNewMain {
         int n = grid.length;
         int m = grid[0].length;
         int[][] ans = new int[n][m];
-        for (int i = 0;i < n; i++) {
-            for (int j = 0;j < m; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 Set<Integer> set1 = new HashSet<>();
                 Set<Integer> set2 = new HashSet<>();
                 int c1 = i - 1, c2 = j - 1, c3 = i + 1, c4 = j + 1;
                 while (c1 >= 0 && c2 >= 0) {
                     set1.add(grid[c1][c2]);
-                    c1--;c2--;
+                    c1--;
+                    c2--;
                 }
                 while (c3 < n && c4 < m) {
                     set2.add(grid[c3][c4]);
-                    c3++;c4++;
+                    c3++;
+                    c4++;
                 }
                 ans[i][j] = Math.abs(set1.size() - set2.size());
             }
@@ -1326,12 +1330,12 @@ public class NewNewMain {
     public long minCost(int[] nums, int x) {
         int n = nums.length;
         long[] sum = new long[n];
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             sum[i] = (long) i * x;
         }
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             int min = nums[i];
-            for (int j = i;j < i + n; j++) {
+            for (int j = i; j < i + n; j++) {
                 min = Math.min(min, nums[j]);
                 sum[j - i] += min;
             }
@@ -1357,7 +1361,7 @@ public class NewNewMain {
             sb.append('a');
             v++;
         }
-        for (int i = v;i < n; i++) {
+        for (int i = v; i < n; i++) {
             char c = s.charAt(i);
             if (c == 'a' && i != 0) {
                 sb.append(s.substring(i));
@@ -1389,8 +1393,75 @@ public class NewNewMain {
         return p.next;
     }
 
+    public ListNode mergeKLists(ListNode[] lists) {
+        return mergeKLists(0, lists.length, lists);
+    }
+
+    public ListNode mergeKLists(int l, int r, ListNode[] lists) {
+        if (r == l) {
+            return lists[r];
+        }
+        int mid = (l + r) >> 1;
+        ListNode list1 = mergeKLists(l, mid, lists);
+        ListNode list2 = mergeKLists(mid + 1, r, lists);
+        return mergeTwoLists(list1, list2);
+    }
+
+    public boolean canChange(String start, String target) {
+        String s1 = start.replaceAll("_", "");
+        String s2 = target.replaceAll("_", "");
+        if (!s1.equals(s2)) {
+            return false;
+        }
+        for (int i = 0, j = 0; j < start.length(); i++) {
+            if (start.charAt(i) == '_') {
+                continue;
+            }
+            while (target.charAt(j) == '_') {
+                j++;
+            }
+            char ch = start.charAt(i);
+            if ((ch == 'L' && i < j) || (ch == 'R' && i > j)) {
+                return false;
+            }
+            j++;
+        }
+        return true;
+    }
+
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        int[] degrees = new int[numCourses];
+        List<Integer>[] lists = new ArrayList[numCourses];
+        for (int i = 0; i < lists.length; i++) {
+            lists[i] = new ArrayList<>();
+        }
+        for (int[] p : prerequisites) {
+            int cur = p[0];
+            int pre = p[1];
+            degrees[cur]++;
+            lists[pre].add(cur);
+        }
+        Queue<Integer> que = new ArrayDeque<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (degrees[i] == 0) {
+                que.add(i);
+            }
+        }
+        int vis = 0;
+        while (!que.isEmpty()) {
+            int cur = que.poll();
+            vis++;
+            for (int x : lists[cur]) {
+                degrees[x]--;
+                if (degrees[x] == 0) {
+                    que.add(x);
+                }
+            }
+        }
+        return vis == numCourses;
+    }
+
     public static void main(String[] args) {
-        int haw = new NewNewMain().minExtraChar("haw", new String[]{"aw"});
-        System.out.println(haw);
+        boolean haw = new NewNewMain().canFinish(2, new int[][]{{1, 0}});
     }
 }
